@@ -10349,7 +10349,6 @@ var _lodash2 = _interopRequireDefault(_lodash);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (function () {
-    console.log((0, _api.cube)(2));
     var mainArr = {
         data: _data.data,
         title: (0, _jquery2.default)(".user-profile"),
@@ -10361,8 +10360,49 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             });
             mainArr.menu.append(list);
         },
+        clickLink: function clickLink() {
+            // Select all links with hashes
+            (0, _jquery2.default)('a[href*="#"]')
+            // Remove links that don't actually link to anything
+            .not('[href="#"]').not('[href="#0"]').click(function (event) {
+                var param = (0, _jquery2.default)(this).attr("href");
+                (0, _jquery2.default)('a[href*="#"]').not('[href=\'' + param + '\']').removeClass("active");
+
+                (0, _jquery2.default)(this).addClass("active");
+                // On-page links
+                if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+                    // Figure out element to scroll to
+                    var target = (0, _jquery2.default)(this.hash);
+                    target = target.length ? target : (0, _jquery2.default)('[name=' + this.hash.slice(1) + ']');
+                    // Does a scroll target exist?
+                    if (target.length) {
+                        // Only prevent default if animation is actually gonna happen
+                        event.preventDefault();
+                        (0, _jquery2.default)('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 1000, function () {
+                            // Callback after animation
+                            // Must change focus!
+                            var $target = (0, _jquery2.default)(target);
+                            $target.focus();
+                            if ($target.is(":focus")) {
+                                // Checking if the target was focused
+                                return false;
+                            } else {
+                                $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
+                                $target.focus(); // Set focus again
+                            };
+                        });
+                    }
+                }
+            });
+        },
         main: function main() {
+            (0, _jquery2.default)(window).scroll(function (event) {
+                console.log(Event);
+            });
             mainArr.menuList();
+            mainArr.clickLink();
             mainArr.menuContent.css({ "padding-top": "4rem" });
         }
     };
